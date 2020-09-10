@@ -1,0 +1,40 @@
+'''
+This is the first program in python CSE 231 summer.
+In this program, we need to take the input as the number of rods.
+The output must be the input as well as the conversions made on that number.
+The minutes to walk is also computed in this program.
+Variables defined are meters,feet,furlongs,miles,min_wrods,rods_float.
+All of the variables are printed except the string variable of rods_float.
+'''
+
+#No header files were needed
+
+
+#Inputting the number of rods and printing the input
+rods=input("Input rods: ")
+rods_float=float(rods)    #conversion from a string to a float
+print("You input "+str(rods_float)+" rods.") 
+
+#Converting the rods into other units using mathematical formulae
+print("Conversions")
+meters=5.0292*rods_float
+
+#printing meters and rounding the answer to 3 decimal places
+print("Meters: "+str(round(meters,3)))
+feet=meters/0.3048
+
+#printing feet and rounding the answer to 3 decimal places
+print("Feet: "+str(round(feet,3)))
+miles=meters/1609.34
+
+#printing miles and rounding the answer to 3 decimal places
+print("Miles: "+str(round(miles,3)))
+furlongs=rods_float/40
+
+#printing furlongs and rounding the answer to 3 decimal places
+print("Furlongs: "+str(round(furlongs,3)))
+
+#Finding the minutes to walk using average walking speed i.e. 3.1miles/hr
+min_w=60*miles/3.1
+print("Minutes to walk "+str(rods_float)+" rods: "+str(round(min_w,3)))
+#END of the program
