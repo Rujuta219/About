@@ -1,0 +1,129 @@
+'''
+Project 2
+A program to formulate the algorithm for calculating the numbers of coins of
+each denomination to dispense so as to minimize
+the total number of coins is an example of a greedy algorithm.
+'''
+import sys #Header file  
+# purchase price and payment will be kept in cents.
+# initialize all the variables to their initial values.
+quarters_ = 10
+dimes_ = 10
+nickels_ = 10
+pennies_ = 10
+
+#An introductory statement 
+print("Welcome to change-making program.")
+#Prints the initial stock
+print("\nStock: {} quarters, {} dimes, {} nickels, and {} pennies".format(
+            quarters_, dimes_, nickels_, pennies_))
+#inputting the purchase price
+while True:
+    in_str = input("Enter the purchase price (xx.xx) or 'q' to quit: ")
+    in_str=float(in_str) #Type conversion
+    if in_str<0.0:
+        print("Error: purchase price must be non-negative.")
+        print("\nStock: {} quarters, {} dimes, {} nickels, and {} pennies".format(
+            quarters_, dimes_, nickels_, pennies_))
+        continue
+    else:
+        break
+#The main while loop for ecxecution of the greedy algorithm
+while in_str != 'q':
+    while True:
+        in_paid=float(input("Input dollars paid (int): "))
+        #subtracting to calculate the difference between the paid price 
+        #and the purchase price
+        #print (float(in_str))
+        #print (float(in_paid))
+        diff_in_price = float(in_paid) - float(in_str) #Difference
+        diff_in_price=round(diff_in_price,2)
+        #print(diff_in_price)
+        diff_in_price = diff_in_price*100.0
+        #print (diff_in_price)
+        if diff_in_price <0.0:
+            print("Error: insufficient payment.")
+            continue
+        else:
+            break
+    # print(diff_in_price)
+    
+    #if else statements 
+    if diff_in_price==0.0:
+        print("No change.")
+    else:
+        if (diff_in_price <((quarters_*25)+(dimes_*10)+(nickels_*5)+(pennies_))):
+            print("Collect change below:")
+            #defining change variables
+            quarters_ch = 0
+            dimes_ch = 0
+            nickels_ch = 0
+            pennies_ch = 0
+            #while loops begin
+        
+            while diff_in_price >= 25.0 and quarters_ !=0 : #loop for quarters
+                quarters_= quarters_- 1  #quarters_-(diff_in_price/25)
+                if (quarters_ <0):
+                    print("Error: ran out of coins.")
+                    sys.exit()
+                quarters_ch = quarters_ch + 1   #quarters_ch+ (diff_in_price/25)
+                #print(quarters_ch)
+                diff_in_price = diff_in_price - 25.0 
+            
+                  
+            while diff_in_price >=10.0 and nickels_!=0:
+                dimes_= dimes_ - 1  #dimes_-(diff_in_price/10)
+                if (dimes_ <0):
+                    print("Error: ran out of coins.")
+                    sys.exit()
+                dimes_ch = dimes_ch+ 1   #dimes_ch+ (diff_in_price/10) 
+                diff_in_price = diff_in_price- 10.0 
+            
+            
+            while diff_in_price >=5.0 and dimes_!=0:
+                nickels_= nickels_ - 1  #nickels_-(diff_in_price/5)
+                if (nickels_ <0):
+                    print("Error: ran out of coins.")
+                    sys.exit()
+                nickels_ch = nickels_ch+ 1   #nickels_ch+ (diff_in_price/5) 
+                diff_in_price = diff_in_price- 5.0 
+            
+            
+            while diff_in_price >= 1.0 and pennies_!=0:
+                pennies_= pennies_ - 1 
+                #print(pennies_)
+                pennies_ch = pennies_ch + 1 
+                #print(pennies_ch)
+                if (pennies_ <0):
+                    print("Error: ran out of coins.")
+                    sys.exit()
+                #print(diff_in_price)
+                diff_in_price = round(diff_in_price- 1,2)
+                
+                #print (diff_in_price)
+                #printing the change variables 
+            if (quarters_ch !=0 ):
+                print("Quarters: "+ str(quarters_ch))
+            if (dimes_ch !=0):
+                print("Dimes: "+str(dimes_ch))
+            if (nickels_ch !=0):
+                print("Nickels: "+str(nickels_ch))
+            if (pennies_ch !=0):
+                print("Pennies: "+str(pennies_ch))
+        else:
+            print("Error: ran out of coins.")
+            sys.exit()
+                
+        #Display the remaining stock
+    print("\nStock: {} quarters, {} dimes, {} nickels, and {} pennies".format(
+            quarters_, dimes_, nickels_, pennies_))
+    #Asking again the purchase price
+    while True:
+        in_str = input("Enter the purchase price (xx.xx) or 'q' to quit: ")
+        in_str=float(in_str) #Type conversion
+        if in_str<0.0: #if else statement for the correct input
+            print("Error: purchase price must be non-negative.")
+            continue
+        else:
+            break
+    
