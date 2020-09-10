@@ -1,0 +1,125 @@
+'''
+Project 05
+This project reads the csv file extracted from the government agricultural data.
+This program will help read the file and the crop name and return all the 
+required information to the user.
+This function gets a csv file as an input and prints the desired data using the 
+display_dict().
+This file has six functions. Four are called through main function.
+'''
+
+import pandas as pd  #importing necessary header files
+#List of states
+STATES = ['Alaska', 'Alabama', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']
+def open_file(): # function to open the file inputted                  
+    is_open=0
+    while is_open==0:                               #the required loop
+        try:                                        # Try to open it
+            file1=open(input("Enter a file: "))
+            is_open=1
+
+        except FileNotFoundError:                   #exeuted if error found in execution of the given data   
+            print("Error opening the file.")                # Print the error 
+    return file1   #returns file pointer
+
+def indice(list, item):  #function called within another function
+    '''
+    Function used in the creation of a dictionary.
+    '''
+    temp = []
+    for i in range(len(list)):
+        if item == list[i]:
+            temp.append(i)
+    return temp
+
+def read_file(f):
+    '''
+    Read the csv and create a dictionary of the required material.
+    '''
+    read_CSV=pd.read_csv(f)
+    states=read_CSV['State'].values.tolist()
+    for j in range(len(states)):
+        for i in range(len(STATES)):
+            if STATES[i] in states[j]:
+                states[j]=STATES[i]
+    crops=read_CSV['Crop'].values.tolist()
+    year=read_CSV['Year'].values.tolist()
+    value=read_CSV['Value'].values.tolist()
+    GE_ent=read_CSV['Variety'].values.tolist()
+    l=len(year)
+    dict_csv={}
+    #creating nested dictionary using the relevant info from the csv file
+    for item in states:
+    	dict_csv[item] = dict()
+    
+    for i in dict_csv.keys():
+    	for ind in indice(states, i):
+    		dict_csv[i][crops[ind]] = [0,0,2019,100]  #default values to compare with for min and max
+    for i in range(l):
+        if GE_ent[i]=='All GE varieties':  #Condition to be considered
+            try:   #Try catch to avoid ValueError in the value column
+                 #getting the max and min in the appending of the inner list
+                if int(value[i])<int(dict_csv[states[i]][crops[i]][3]):
+                    dict_csv[states[i]][crops[i]][3]=(value[i])
+                    dict_csv[states[i]][crops[i]][2]=(year[i])
+                if int(value[i])>int(dict_csv[states[i]][crops[i]][1]):
+                    dict_csv[states[i]][crops[i]][1]=(value[i])
+                    dict_csv[states[i]][crops[i]][0]=(year[i])
+            except ValueError:
+                continue
+    
+    f.close()  #closing the file as it is no longer necessary
+    return dict_csv   #returning the read dictionary
+
+def read_dict(dict_csv):
+    '''
+    Read into a dictionary indexed by states where each state had a dictionary by crop with years
+    and percentages. To prepare for output, used a second dictionary index by crop.
+    '''
+    crops=[]
+    for values in dict_csv.values():
+        for key in values.keys():
+            if key not in crops:
+                crops.append(key)
+    crops.sort()   #getting a sorted list of the crops present
+    dict_crop={}
+    for j in crops:  #looping over the crops
+    	dict_crop[j] = dict()
+    for i in dict_crop.keys():
+        for state in STATES:   #looping over states
+            try:   #try except for the value error
+                if dict_csv[state][i]:
+                    dict_crop[i][state] = dict_csv[state][i]
+            except KeyError:
+                continue  
+    return dict_crop #Returning the desired dictionary
+
+def display_dict(dict_crop):
+    '''
+    For each crop the data is output alphabetically by state name.
+    Each line has these values: state, max year, max value, min year, min value
+    '''
+    for key,value in dict_crop.items(): #outer loop for crop 
+        print("Crop: "+key)
+        print('{:<20s}{:<8s}{:<6s}{:<8s}{:<6s}'.format('State','Max Yr','Max','Min Yr','Min'))
+        for i in value.keys():   # inner looop for state and the relevant info
+            state=i
+            max_y=dict_crop[key][i][0]
+            max_p=dict_crop[key][i][1]
+            min_y=dict_crop[key][i][2]
+            min_p=dict_crop[key][i][3]
+            print('{:<20s}{:<8s}{:<6d}{:<8s}{:<6d}'.format(state,str(max_y),int(max_p),str(min_y),int(min_p)))
+            
+def main():
+    '''
+    Program to run the overall program smoothly and calling the functions wisely.
+    '''
+    f=open_file()   #calling open file function
+    dict_csv=read_file(f)   #calling the read_csv function
+    #Two other functions called
+    dict_crop=read_dict(dict_csv)  #calling the read_dict function
+    display_dict(dict_crop)   #calling the display function
+    
+#Calls the main function automatically to begin the execution
+if __name__ == "__main__":
+ main()
