@@ -1,0 +1,102 @@
+'''
+Project 03 
+The goal of this project is to calculate the change in GDP.
+The max and min change in GDP is calculated using the find_max_percent() and 
+the function find_min_percent().
+Then the GDP is found out using the function find_gdp()
+Display fuunction is used to display in a particular format and 
+the main function is used to synchronize all the functions.
+'''
+def open_file():                                    #function to open file
+    is_open=0
+    while is_open==0:                               #the required loop
+        try:                                        # Try to open it
+            file1=open(input('Enter a file name: '))
+            is_open=1
+        except FileNotFoundError:                   #exeuted if error found in execution of the given data   
+            print("Error. Please try again")                # Print the error 
+    return file1                                    #returning the file to the main function
+    
+def find_min_percent(line):
+#Find the min percent change in the line; return the value and the index.'''
+     val_min = 10000000 # some large value
+
+     line_list=[]  #defining an empty list
+     for i in range (0,47):
+         line_list.append(float(line[(76+12*i):(88+12*i)]))
+     
+     for each_val_f in line_list:
+        # each_val_f=float(each_val)
+         if each_val_f < val_min: # you have found a smaller value
+             val_min = each_val_f # set min_value to that smaller value
+     minvalue_index = line_list.index(val_min)
+     return val_min, minvalue_index    #returning the min value and the index
+ 
+    
+def find_max_percent(line):
+#Find the max percent change in the line; return the value and the index.'''
+     val_max = 0 # some large value
+     
+     line_list=[] #defining an empty list
+     for i in range (0,47):
+         line_list.append(float(line[(76+12*i):(88+12*i)]))
+     
+     for each_val_f in line_list:
+         #each_val_f=float(each_val)
+         if each_val_f > val_max: # you have found a smaller value
+             val_max = each_val_f # set min_value to that smaller value
+     maxvalue_index=line_list.index(val_max)
+     return val_max, maxvalue_index #returning the max value and the index
+
+def find_gdp(line, index):
+    '''Use the index fo find the gdp value in the line; return the value'''
+    ret_l=line[(76+12*index):(88+12*index)]
+    return float(ret_l) #returning the gdp 
+
+        
+def display(min_val, min_year, min_val_gdp, max_val, max_year, max_val_gdp):
+    '''Display values; convert billions to trillions first.'''    
+    min_val_gdp=min_val_gdp/1000.0
+    max_val_gdp=max_val_gdp/1000.0
+    #Displaying according to the format
+    print('Gross Domestic Product')
+    print('{:<10s}{:^10s}{:<10s}{:<10s}'.format('min/max','change','year','GDP (trillions)'))
+    print('{:<10s}{:>8.1f}{:>6d}{:>18.2f}'.format('min',min_val,min_year,min_val_gdp))
+    print('{:<10s}{:>8.1f}{:>6d}{:>18.2f}'.format('max',max_val,max_year,max_val_gdp))
+
+def main():             #Main function        
+    f=open_file()       #Calling the open_file function
+    i=0
+    for line in f: #looping to gt the particular lines
+        if (i==8):
+            line_9=line
+           # print(line)
+        if (i==43):
+            line_44=line
+           # print(line)
+        if (i==7):
+            line_8=line
+        i=i+1
+    #list to get the years 
+    line_list_year=[]  #defining an empty list
+    for i in range (0,47):
+         line_list_year.append(int(line_8[(76+12*i):(88+12*i)]))
+     #Calling  all the functions accordingly
+    min_val,min_val_in=find_min_percent(line_9)
+    max_val,max_val_in=find_max_percent(line_9)
+    #To find the gdp after calculating the min and max percent 
+    min_val_gdp=find_gdp(line_44,min_val_in)
+    max_val_gdp=find_gdp(line_44,max_val_in)
+    #Get the year according to the index obtained
+    min_year=line_list_year[min_val_in]
+    max_year=line_list_year[max_val_in]
+     #Display the desired output
+    display(min_val, min_year, min_val_gdp, max_val, max_year, max_val_gdp)
+         
+     
+
+# Calls the 'main' function only when you execute within Spyder (or console)
+# Do not modify the next two lines.
+if __name__ == "__main__":
+    main()
+
