@@ -1,0 +1,146 @@
+'''
+Project 04
+In this project we will process the AWI data from the year 2014 and 2015.
+We will be able to draw a graph, get ranges and percent.
+The mean and median would also be displayed. 
+'''
+import pylab   #IMporting header files
+
+def do_plot(x_vals,y_vals,year):  #Function to plot
+    '''Plot x_vals vs. y_vals where each is a list of numbers of the same length.'''
+    pylab.xlabel('Income')
+    pylab.ylabel('Cumulative Percent')
+    pylab.title("Cumulative Percent for Income in "+str(year))
+    pylab.plot(x_vals,y_vals)
+    pylab.show()
+        
+def open_file():
+    '''This function opens the file with the year name '''
+    is_open=0
+    while is_open==0:
+        try:                                             #Try for valueerror
+            year_str = int(input("Enter a year where 1990 <= year <= 2015: "))
+            if not 1990<=year_str<=2015:
+                print("Error in year. Please try again.")
+            else:            
+                try:                                        # Try to open it
+                    filename='year'+str(year_str)+'.txt'
+                    file1=open(filename,'r')
+                    is_open=1
+                except FileNotFoundError:                   #exeuted if error found in execution of the given data   
+                    print("Error in file name:",filename," Please try again.") # Print the error 
+        except ValueError:
+            print("Error in year. Please try again.")
+            
+    return file1,year_str                         #returning the file to the main function
+        
+def read_file(fp):
+    '''This function returns data one requires for other parts of the project.'''
+    #Getting a list of all the lines 
+    lines = [line.rstrip('\n') for line in fp]   #data_list.append(str((fp.readline())))
+  
+    return lines
+
+def find_average(data_list):
+    '''Find the average income of people in that year'''
+    l=len(data_list)
+    temp_list=[]
+    den_tot=0.0
+    num_tot=0.0
+    for i in range(2,l): #loop over the range of numbers
+        temp_list=data_list[i].split()
+        den_tot=den_tot+float(temp_list[3].replace(',',''))
+        num_tot=num_tot+float(temp_list[6].replace(',',''))
+
+    avg=float(num_tot)/float(den_tot)#calculate mean value
+    return avg
+
+def find_median(data_list):
+     '''Find the median income of people in that year'''
+     l=len(data_list)
+     temp_list=[]
+     min_dif=50.0
+     for i in range(2,l):  #loop over the range of numbers
+         temp_list=data_list[i].split()
+         temp_dif=abs(float(temp_list[5].replace(',',''))-50.0)
+         if min_dif>=temp_dif: #Checking the minimum difference
+             min_dif=temp_dif
+             counter=float((temp_list[7].replace('\n','')).replace(',',''))
+     median=counter
+     return median  #returning the median value
+ 
+def get_range(data_list, percent):
+    '''Gets you the range when the percent is given'''
+    l=len(data_list)
+    temp_list=[]
+    for i in range(2,l):
+        temp_list=data_list[i].split()
+        if float(temp_list[5].replace(',',''))>=percent:
+            return ((float(temp_list[0].replace(',','')),float(temp_list[2].replace(',',''))),float(temp_list[5].replace(',','')),float(temp_list[7].replace(',','')))
+
+
+def get_percent(data_list,salary):
+       '''Gets you the percent income when the an income is given'''
+       l=len(data_list)
+       temp_list=[]
+       for i in range(2,l):
+           temp_list=data_list[i].split()
+           if float(temp_list[0].replace(',',''))<=salary<=float(temp_list[2].replace(',','')):
+               return ((float(temp_list[0].replace(',','')),float(temp_list[2].replace(',',''))),float(temp_list[5].replace(',','')))
+
+
+def main():
+    '''Main() function executes the flow of the program smoothly'''
+    f,year=open_file()   #open the file
+    data_list=read_file(f)  #read the file
+    #getting mean
+    avg=find_average(data_list)
+    #getting median
+    median=find_median(data_list) 
+    #Printing as required
+    print("{:<6s}{:<14s}{:<14s}".format('Year','Mean','Median'))
+    print("{:<6d}${:<14,.2f}${:<14,.2f}".format(year,avg,median))
+    response = str(input("Do you want to plot values (yes/no)? "))
+    if response.lower() == 'yes':  #For plotting creating the x and y values in lists
+        x_vals=[]
+        y_vals=[]
+        temp_list=[]
+        for i in range(2,41):
+            temp_list=data_list[i].split()
+            x_vals.append(float(temp_list[0].replace(',','')))
+            y_vals.append(float(temp_list[5].replace(',','')))
+         #determine y_vales, a list of floats of the same length as x_vals
+         #determine x_vals, a list of floats # use the lowest 40 income ranges
+        do_plot(x_vals,y_vals,year)
+    #Asking for the choice
+    choice = input("Enter a choice to get (r)ange, (p)ercent, or nothing to stop: ")
+    #while choice isn't empty
+    while choice:
+        #If else according to the choice entered
+        if choice=='r':
+             percent=float(input('Enter a percent: '))
+             flag=1
+             if not 0<=percent<=100:
+                print("Error in percent. Please try again")
+                flag=0
+             if flag==1:
+                 income_=get_range(data_list,percent)[0][0]
+                 #print(income_)
+                 print("{:4.2f}% of incomes are below ${:<13,.2f}.".format(percent,float(income_)))
+        elif choice=='p':
+            income=float(input('Enter an income: ')) 
+            flag=1
+            if income<0:
+                print("Error: income must be positive")
+                flag=0
+            if flag==1:
+                percent=get_percent(data_list,income)[1]
+                print("An income of ${:<13,.2f} is in the top {:4.2f}% of incomes.".format(income,float(percent)))
+        else:
+            print("Error in selection.")
+            
+        choice = input("Enter a choice to get (r)ange, (p)ercent, or nothing to stop: ")
+#Defaulting main function
+if __name__ == "__main__":
+    main()
+#
