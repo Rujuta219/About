@@ -1,0 +1,312 @@
+'''
+Project 06
+In this project the user plays the game of poker.
+There are eight poker hands. Every hand is a function in this program.
+The order of hands are demonstrated in the main function.
+Three inbuilt functions are given for the assistance.
+Every hand usually involves a dictionary with mostly suit as it's key.
+This program has been written systematically to give a demo of the world famous game poker.
+The hierarchy of the hands is used in the main function as the prime basisi of the program structure.
+
+'''
+
+
+import cards   #Header file
+
+def less_than(c1,c2):
+    '''Return 
+           True if c1 is smaller in rank, 
+           True if ranks are equal and c1 has a 'smaller' suit
+           False otherwise'''
+    if c1.rank() < c2.rank():
+        return True
+    elif c1.rank() == c2.rank() and c1.suit() < c2.suit():
+        return True
+    return False
+    
+def min_in_list(L):
+    '''Return the index of the mininmum card in L'''
+    min_card = L[0]  # first card
+    min_index = 0
+    for i,c in enumerate(L):
+        if less_than(c,min_card):  # found a smaller card, c
+            min_card = c
+            min_index = i
+    return min_index
+        
+def cannonical(H):
+    ''' Selection Sort: find smallest and swap with first in H,
+        then find second smallest (smallest of rest) and swap with second in H,
+        and so on...'''
+    for i,c in enumerate(H):
+        # get smallest of rest; +i to account for indexing within slice
+        min_index = min_in_list(H[i:]) + i 
+        H[i], H[min_index] = H[min_index], c  # swap
+    return H
+
+def flush_7(H):
+    '''Return a list of 5 cards forming a flush,
+       if at least 5 of 7 cards form a flush in H, a list of 7 cards, 
+       False otherwise.'''
+    suits=[[],[],[],[]] 
+    for c in H:
+        suits[c.suit()-1].append(c)
+    for i in range(4):
+        if len(suits[i])>=5:
+            return suits[i][:5]
+    return False
+
+def straight_7(H):
+    '''
+    Return a list of 5 cards forming a straight,
+       if at least 5 of 7 cards form a straight in H, a list of 7 cards, 
+       False otherwise.
+    '''
+    H=cannonical(H)
+    for i in range(3):
+        if (H[i+4].rank()-H[i+3].rank())==(H[i+3].rank()-H[i+2].rank())==(H[i+2].rank()-H[i+1].rank())==(H[i+1].rank()-H[i].rank())==1:
+            r=[H[i+4],H[i+3],H[i+2],H[i+1],H[i]]
+            return r 
+    return False
+            
+def straight_flush_7(H):
+    '''Return a list of 5 cards forming a straight flush,
+       if at least 5 of 7 cards form a straight flush in H, a list of 7 cards, 
+       False otherwise.'''
+    suits=[[],[],[],[]] 
+    for c in H:
+        suits[c.suit()-1].append(c)
+    for j in range(4):
+        if len(suits[j])>=5:
+            H=cannonical(suits[j])
+            for i in range(len(H)-4):
+                if (H[i+4].rank()-H[i+3].rank())==(H[i+3].rank()-H[i+2].rank())==(H[i+2].rank()-H[i+1].rank())==(H[i+1].rank()-H[i].rank())==1:
+                    r=[H[i+4],H[i+3],H[i+2],H[i+1],H[i]]
+                    return r
+    return False
+
+def four_7(H):
+    '''Return a list of 4 cards with the same rank,
+       if 4 of the 7 cards have the same rank in H, a list of 7 cards, 
+       False otherwise.'''
+    H=cannonical(H)
+    for i in range(4):
+        if H[i].rank()==H[i+1].rank()==H[i+2].rank()==H[i+3].rank():
+            return [H[i],H[i+1],H[i+2],H[i+3]]
+    return False
+
+def three_7(H):
+    '''Return a list of 3 cards with the same rank,
+       if 3 of the 7 cards have the same rank in H, a list of 7 cards, 
+       False otherwise.
+       You may assume that four_7(H) is False.
+    '''
+    H=cannonical(H)
+    for i in range(5):
+        if H[i].rank()==H[i+1].rank()==H[i+2].rank():
+            return [H[i],H[i+1],H[i+2]]
+    return False
+        
+def two_pair_7(H):
+    '''Return a list of 4 cards that form 2 pairs,
+       if there exist two pairs in H, a list of 7 cards, 
+       False otherwise.  
+       You may assume that four_7(H) and three_7(H) are both False.'''
+    H=cannonical(H)
+    flag=0
+    r=[]
+    for i in range(6):
+        try:
+            if H[i].rank()==H[i+1].rank() and not H[i].rank()==H[i+1].rank()==H[i+2].rank():
+                r.append(H[i])
+                r.append(H[i+1])
+                i=i+1
+                flag=flag+1
+                if flag==2:
+                    return r
+        except IndexError:
+            continue
+    return False
+
+def one_pair_7(H):
+    '''Return a list of 2 cards that form a pair,
+       if there exists exactly one pair in H, a list of 7 cards, 
+       False otherwise.  
+       You may assume that four_7(H), three_7(H) and two_pair(H) are False.'''
+    H=cannonical(H)
+    for i in range(6):
+        try:
+            if H[i].rank()==H[i+1].rank() :
+                return [H[i],H[i+1]]
+        except IndexError:
+            continue
+    return False
+
+def full_house_7(H):
+    '''Return a list of 5 cards forming a full house,
+       if 5 of the 7 cards form a full house in H, a list of 7 cards, 
+       False otherwise.
+       You may assume that four_7(H) is False.'''    
+    H=cannonical(H)
+    r=[]
+    three,two=0,0
+    for i in range(6):
+        try:
+            if H[i].rank()==H[i+1].rank()==H[i+2].rank():
+                r.append(H[i])
+                r.append(H[i+1])
+                r.append(H[i+2])
+                three=three+1
+            elif H[i].rank()==H[i+1].rank():
+                r.append(H[i])
+                r.append(H[i+1])
+                two=two+1
+        except IndexError:
+            continue
+        if two==1 and three==1:
+            return r
+    return False
+
+def main():
+    '''
+    Main function is used to execute the program smoothly and call every function as required
+    '''
+    D = cards.Deck()
+    D.shuffle()
+    choice='y'
+    while choice.lower()=='y':
+        # create community cards
+        # create Player 1 hand
+        # create Player 2 hand
+        hand_1_list=[]
+        hand_2_list=[]
+        community_list=[]
+        for i in range(5):
+            community_list.append(D.deal())
+        hand_1_list.append( D.deal() )
+        hand_1_list.append( D.deal() )
+        hand_2_list.append( D.deal() )
+        hand_2_list.append( D.deal() )
+        ans=0
+        print("-"*40)
+        print("Let's play poker!\n")
+        print("Community cards:",community_list)
+        print("Player 1:",str(hand_1_list))
+        print("Player 2:",str(hand_2_list))
+        print()
+        H1=community_list+hand_1_list
+        H2=community_list+hand_2_list
+        #Straight flush
+        if ans==0:
+            sf_1=straight_flush_7(H1)
+            sf_2=straight_flush_7(H2)
+            if sf_1!=False and sf_2==False:   #if else statement for the proper result
+                print('Player 1 wins with a staright flush: '+str(sf_1))
+                ans=1
+            elif sf_1==False and sf_2!=False:
+                print('Player 2 wins with a staright flush: '+str(sf_2))
+                ans=1
+            elif sf_1!=False and sf_2!=False:
+                print('TIE with a staright flush: '+str(sf_1))
+                ans=1
+        #Four of a kind
+        if ans==0:
+            fk_1=four_7(H1)
+            fk_2=four_7(H2)
+            if fk_1!=False and fk_2==False:   #if else statement for the proper result
+                print('Player 1 wins with four of a kind: '+str(fk_1))
+                ans=1
+            elif fk_1==False and fk_2!=False:
+                print('Player 2 wins with four of a kind: '+str(fk_2))
+                ans=1
+            elif fk_1!=False and fk_2!=False:
+                print('TIE with four of a kind: '+str(fk_1))
+                ans=1
+        #Full house
+        if ans==0:
+            fh_1=full_house_7(H1)
+            fh_2=full_house_7(H2)
+            if fh_1!=False and fh_2==False:  #if else statement for the proper result
+                print('Player 1 wins with a full house: '+str(fh_1))
+                ans=1
+            elif fh_1==False and fh_2!=False:
+                print('Player 2 wins with a full house: '+str(fh_2))
+                ans=1
+            elif fh_1!=False and fh_2!=False:
+                print('TIE with a full house: '+str(fh_1))
+                ans=1
+        #Flush
+        if ans==0:
+            fl_1=flush_7(H1)
+            fl_2=flush_7(H2)
+            if fl_1!=False and fl_2==False:  #if else statement for the proper result
+                print('Player 1 wins with a flush: '+str(fl_1))
+                ans=1
+            elif fl_1==False and fl_2!=False:
+                print('Player 2 wins with a flush: '+str(fl_2))
+                ans=1
+            elif fl_1!=False and fl_2!=False:
+                print('TIE with a flush: '+str(fl_1))
+                ans=1
+        #Straight 
+        if ans==0:
+            st_1=straight_7(H1)
+            st_2=straight_7(H2)
+            if st_1!=False and st_2==False:  #if else statement for the proper result
+                print('Player 1 wins with a staright : '+str(st_1))
+                ans=1
+            elif st_1==False and st_2!=False:
+                print('Player 2 wins with a staright : '+str(st_2))
+                ans=1
+            elif st_1!=False and st_2!=False:
+                print('TIE with a staright : '+str(st_1))
+                ans=1
+        #Three of a kind 
+        if ans==0:
+            tk_1=three_7(H1)
+            tk_2=three_7(H2)
+            if tk_1!=False and tk_2==False:  #if else statement for the proper result
+                print('Player 1 wins with three of a kind : '+str(tk_1))
+                ans=1
+            elif tk_1==False and tk_2!=False:
+                print('Player 2 wins with three of a kind : '+str(tk_2))
+                ans=1
+            elif tk_1!=False and tk_2!=False:
+                print('TIE with three of a kind : '+str(tk_1))
+                ans=1
+        #Two pair
+        if ans==0:
+            tp_1=two_pair_7(H1)
+            tp_2=two_pair_7(H2)
+            if tp_1!=False and tp_2==False:  #if else statement for the proper result 
+                print('Player 1 wins with two pairs: '+str(tp_1))
+                ans=1
+            elif tp_1==False and tp_2!=False:
+                print('Player 2 wins with two pairs: '+str(tp_2))
+                ans=1
+            elif tp_1!=False and tp_2!=False:
+                print('TIE with two pairs: '+str(tp_1))
+                ans=1
+        #One pair
+        if ans==0:
+            tp_1=one_pair_7(H1)
+            tp_2=one_pair_7(H2)
+            if tp_1!=False and tp_2==False:  #if else statement for the proper result
+                print('Player 1 wins with one pair: '+str(tp_1))
+                ans=1
+            elif tp_1==False and tp_2!=False:
+                print('Player 2 wins with one pair: '+str(tp_2))
+                ans=1
+            elif tp_1!=False and tp_2!=False:
+                print('TIE with two pairs: '+str(tp_1))
+                ans=1
+        #print(D)
+        if len(D)>=9:  #if else to know when the cards are over
+            choice=input('Do you wish to play another hand?(Y or N)')
+            print()
+        else:
+            print('Deck has too few cards so game is done.')
+            choice='N'
+
+if __name__ == "__main__":
+    main()
