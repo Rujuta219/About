@@ -1,5 +1,4 @@
 '''
-This is the first program in python CSE 231 summer.
 In this program, we need to take the input as the number of rods.
 The output must be the input as well as the conversions made on that number.
 The minutes to walk is also computed in this program.
