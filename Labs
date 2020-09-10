@@ -1,0 +1,532 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed May 15 01:37:54 2019
+
+@author: Rujuta Karanjikar
+"""
+
+# Laboratory Exercise #2 (Part D)
+#
+# Purpose:  compute the two roots of a quadratic equation.
+#
+# Import the math module to access function "math.sqrt()".
+import math
+
+A = float( input( "\nEnter the coefficient A: " ) )
+
+B = float( input( "\nEnter the coefficient B: " ) )
+
+C = float( input( "\nEnter the coefficient C: " ) )
+
+print( "\nThe coefficients of the equation:\n" )
+print( "  Coefficient A = ", A )
+print( "  Coefficient B = ", B )
+print( "  Coefficient C = ", C )
+
+root1=(-B+math.sqrt(B**2-4*A*C))
+root1=root1/(2*A)
+root2=(-B-math.sqrt(B**2-4*A*C))
+root2=root2/(2*A)
+
+print( "\nThe roots of the equation:\n" )
+print( "  Root #1 = ", round(root1,3) )  # round the result to three decimal places before printing
+print( "  Root #2 = ", round(root2,3) )
+_____________________________________________________________
+# -*- coding: utf-8 -*-
+"""
+Created on Wed May 15 01:47:56 2019
+
+@author: Rujuta Karanjikar
+"""
+n_str=1
+even_sum=0
+odd_sum=0
+even_count=0
+odd_count=0
+positive_int_count=0
+while n_str!=0:
+    n_str = int(input("Input an integer (0 terminates): "))
+    if n_str>0:
+        positive_int_count=positive_int_count+1
+        if n_str%2 == 0:
+            even_sum=even_sum+n_str
+            even_count=even_count+1
+        elif n_str%2!=0:
+            odd_sum=odd_sum+n_str
+            odd_count=odd_count+1
+print()
+print("sum of odds:", odd_sum)
+print("sum of evens:", even_sum)
+print("odd count:", odd_count)
+print("even count:", even_count)
+print("total positive int count:", positive_int_count)
+________________________________________________________________________________________
+'''
+Lab 03 
+working on strings to create the desired output.
+'''   
+
+VOWELS = "aeiou"
+CONS= "qwrtyplkjhgfdszxcvbnm"
+
+while True: # loop where the default execution is true
+    word = str.lower(input("Enter a word ('quit' to quit): ")) #inputting the string from the user
+    if word[0] in VOWELS: # if statement using in command
+        print(word+"way")
+    elif word=="quit":    #user enters quit
+        break             #control is out of the loop
+    elif word=="":        #user enters an empty string
+        print("Can't convert empty string.  Try again.")
+    elif len(word)==1:
+        print(word+"ay")
+    else:
+        while word[0] in CONS: #Loop 2
+            word = word[1:]+word[0] #rotating the string 
+        print(word+"ay")
+_______________________________________________________________________________________________
+'''
+Lab 04
+'''
+
+#Function to find out it it is a leap year or not
+def leap_year(str_year):
+    y_no=int(str_year)
+    if y_no%400==0 or (y_no%4==0 and y_no%100 !=0): #condition for the leap year
+        return True
+    else:
+        return False
+
+#Function to rotate the string according to the given number
+def rotate(s,n):
+    if len(s)<=1:#if statements
+        return s
+    else:
+        temp=s[(len(s)-n):]
+        print(temp)
+        beg=s[:(len(s)-n)]
+        print(beg)
+        s=temp+beg
+        return s
+
+
+#Function to count even,odd digits and zeroes before the decimal point. 
+def digit_count(num):
+    str_num=str(num)
+    even_count=0
+    odd_count=0
+    zero_count=0
+    flag =0
+    #for loop
+    for ch in str_num:
+        if ch=='.':  #outer if 
+           flag=1 
+        else:
+            digit=int(ch)
+            if digit==0 and flag==0: #inner if
+                zero_count=zero_count+1
+                #print(str(zero_count)+'efwef')
+            elif (digit%2==0) and flag==0:
+                even_count=even_count+1
+                #print(even_count)
+            elif((digit+1)%2 ==0) and flag==0:
+                odd_count=odd_count+1
+                #print(odd_count)
+    return (even_count,odd_count,zero_count)
+digit_count(123400.23)
+#Function to check if the paricular function is a float or not 
+def float_check(str_num):
+    flag=0
+    float_=True
+    for ch in str_num: #for loop
+        if ch=='.': #outer if
+            flag+=1
+            if flag>1: #inner if
+                float_=False
+                break
+        elif ch.isdigit()==False:
+            float_=False
+            break
+    return float_ #returns a boolean value
+ ____________________________________________________________________________________________________
+ '''
+lab 05
+'''
+file_name= "data.txt"
+
+#outfile = open("output.txt",'w')
+f=open(file_name,'r')
+
+line = f.readline()
+print(line.strip(), "  BMI")
+#initializing values
+height_min,weight_min,bmi_min=999,999,999
+height_max,weight_max,bmi_max=0,0,0
+avg_h,avg_w,avg_bmi=0,0,0
+tot_weight,tot_height,tot_bmi=0,0,0
+#running a loop over every line
+for line in f:
+    name=line[0:12]
+    height=float(line[12:24])
+    weight=float(line[24:36])
+    BMI=weight/height**2
+    
+    if height>height_max:
+        height_max=height
+    if weight>weight_max:
+        weight_max=weight
+    if weight<weight_min:
+        weight_min=weight
+    if height<height_min:
+        height_min=height
+    if bmi_max<BMI:
+        bmi_max=BMI
+    if bmi_min>BMI:
+        bmi_min=BMI
+    tot_weight=tot_weight+weight
+    tot_height=tot_height+height
+    tot_bmi=tot_bmi+BMI
+        
+    
+    
+        
+    print('{:<12s}{:<12.2f}{:<12.2f}{:<12.2f}'.format(name,height,weight,BMI))
+
+avg_w = tot_weight / 8.0
+avg_h = tot_height / 8.0
+avg_bmi = tot_bmi / 8.0
+
+print("")
+print('{:<12s}{:<12.2f}{:<12.2f}{:<12.2f}'.format('Average',avg_h,avg_w,avg_bmi))
+print('{:<12s}{:<12.2f}{:<12.2f}{:<12.2f}'.format('Max',height_max,weight_max,bmi_max))
+print('{:<12s}{:<12.2f}{:<12.2f}{:<12.2f}'.format('Min',height_min,weight_min,bmi_min))
+
+#outfile.close()
+
+f.close()
+________________________________________________________________________________________________
+'''
+Lab 06
+'''
+f=open('scores.txt') #open file
+students_list=[]#empty list
+sum_sc1,sum_sc2,sum_sc3,sum_sc4=0,0,0,0 #initializing values
+for line in f: #loop for reading lines
+    line=line.split() #split line
+    #print(line)
+    scores_list=[]
+    sum_sc=0
+    name=line[0]+' '+line[1]
+    for i in range(2,6):
+        if (i==2):
+            sum_sc1=sum_sc1+int((line[i]))
+        if (i==3):
+            sum_sc2=sum_sc2+int((line[i]))
+        if (i==4):
+            sum_sc3=sum_sc3+int((line[i]))
+        if (i==5):
+            sum_sc4=sum_sc4+int((line[i]))
+        
+        scores_list.append(int(line[i]))
+        sum_sc=sum_sc+int(line[i])
+    mean_sc=round(sum_sc/4.0,2)#every student's mean marks
+    s_tuple=(name,scores_list,mean_sc) #creating a tuple
+    students_list.append(s_tuple) #appending the main list
+#calculating mean for exams
+mean_sc1=round(sum_sc1/5.0,1)
+mean_sc2=round(sum_sc2/5.0,1)
+mean_sc3=round(sum_sc3/5.0,1)
+mean_sc4=round(sum_sc4/5.0,1)
+
+students_list.sort() #sorting the list
+#printing accordingly
+print("{:<20s}{:>6s}{:>6s}{:>6s}{:>6s}{:>10s}".format('Name','Exam1','Exam2','Exam3','Exam4','Mean'))
+for i in range(0,5):
+    print("{:20s}{:6d}{:6d}{:6d}{:6d}{:10.2f}".format(students_list[i][0],students_list[i][1][0],students_list[i][1][1],students_list[i][1][2],students_list[i][1][3],students_list[i][2]))
+print("{:20s}{:6.1f}{:6.1f}{:6.1f}{:6.1f}".format('Exam Mean',mean_sc1,mean_sc2,mean_sc3,mean_sc4))
+_________________________________________________________________________________________________________________________________________
+''''
+Lab 08
+This program returns the word and the count of the word in the documnet.
+'''
+
+import string
+from operator import itemgetter
+
+
+def add_word( word_map, word ):
+    '''
+    This function adds the wword in the word_Map
+    '''
+
+    # ADD THE WORD TO THE WORD_MAP IF IT DOES NOT EXIST ALREADY
+    if word not in word_map:
+        word_map[ word ] = 0
+
+    # INCREASE THE WORD_COUNT
+    word_map[ word ] += 1
+
+
+def build_map( in_file, word_map ):
+    '''
+    This function builds the map by splitting the line in a list format and calling the function add_word()
+    '''
+
+    for line in in_file:
+
+        # MAKING THE LIST OF WORDS USING SPLIT()
+        word_list = line.split()
+
+        for word in word_list:
+
+            # SINGLE OUT EVERY WORD AND PASS THE WORD WITH THE WORD_MAP TO THE FUNCTION ADD_WORD()
+            word = word.strip().strip(string.punctuation)
+#            if word=='':
+#                break
+            add_word( word_map, word.lower() )
+        
+
+def display_map( word_map ):
+    ''' 
+    This function displays the word_map i.e. the dictionary of number of words and the word as the key.
+    '''
+
+    word_list = list()
+
+    # CREATE A LIST OF WORDS AND THEIR FREQUENCIES
+    for word, count in word_map.items():
+        word_list.append( (word, count) )
+
+    # SORT THE list
+    word_list_=sorted(word_list, key=itemgetter(0))
+    freq_list = sorted( word_list_, key=itemgetter(1) ,reverse=True)
+
+    print( "\n{:15s}{:5s}".format( "Word", "Count" ) )
+    print( "-"*20 )
+    for item in freq_list:
+        if item[0]!='':
+            print( "{:15s}{:>5d}".format( item[0], item[1] ) )
+
+
+def open_file():                                    #function to open file
+    is_open=0
+    while is_open==0:                               #the required loop
+        try:                                        # Try to open it
+            file1=open(input('Enter file name: '))
+            is_open=1
+        except FileNotFoundError:                   #exeuted if error found in execution of the given data   
+            print("Error. Please try again")                # Print the error 
+    return file1                                    #returning the file to the main function
+    
+
+#This is the main part of the program 
+    
+word_map = dict()
+in_file = open_file()
+
+if in_file != None:
+
+    build_map( in_file, word_map )
+    display_map( word_map )
+    in_file.close()
+________________________________________________________________________________________________________________________
+'''
+Lab10 extension on the given program
+'''
+##
+## Demonstrate some of the operations of the Deck and Card classes
+##
+
+import cards
+
+# Seed the random number generator to a specific value so every execution
+# of the program uses the same sequence of random numbers (for testing).
+
+import random
+random.seed( 100 )
+def compare(player1_card,player2_card):
+    if player1_card.rank() == player2_card.rank():
+        print( "Tie:", player1_card, "and", player2_card, "of equal rank" )
+    elif player1_card.rank() > player2_card.rank():
+        print( "Player #1 wins:", player1_card, "of higher rank than", player2_card )
+    else:
+        print( "Player #2 wins:", player2_card, "of higher rank than", player1_card )
+# Create a deck of cards
+
+my_deck = cards.Deck()
+
+
+# Shuffle the deck, then display it in 13 columns
+
+my_deck.shuffle()
+print( "===== shuffled deck =====" )
+my_deck.display()
+
+
+# Deal five cards to each player (alternating)
+
+print( "Dealt five cards to each player (alternating)" )
+print()
+
+player1_list=[]
+player2_list=[]
+for i in range( 5 ):
+    player1_list.append( my_deck.deal() )
+    player2_list.append( my_deck.deal() )
+
+# Display each player's cards and the cards still in the deck
+print( "===== player #1 =====" )
+print()
+print( player1_list )
+print()
+print( "===== player #2 =====" )
+print()
+print( player2_list )
+print()
+print( "===== remaining cards in deck =====" )
+my_deck.display()
+
+# First card dealt to Player #1
+player1_card = player1_list.pop( 0 )
+print( "First card dealt to player #1:", player1_card )
+print('Player #1 hand: '+str(player1_list))
+# First card dealt to Player #2
+player2_card = player2_list.pop( 0 )
+print( "First card dealt to player #2:", player2_card )
+print('Player #2 hand: '+str(player2_list))
+print()
+compare(player1_card,player2_card)
+print()
+# Compare the ranks of the two cards
+player1_card = player1_list.pop( 0 )
+print( "Second card dealt to player #1:", player1_card )
+print('Player #1 hand: '+str(player1_list))
+print()
+# First card dealt to Player #2
+player2_card = player2_list.pop( 0 )
+print( "Second card dealt to player #2:", player2_card )
+print('Player #2 hand: '+str(player2_list))
+#compare(player1_card,player2_card)
+print()
+player1_card = player1_list.pop( 2 )
+print( "Last card in hand of player #1:", player1_card )
+# First card dealt to Player #2
+player2_card = player2_list.pop( 2 )
+print( "Last card in hand of player #2:", player2_card )
+print()
+if player1_card.rank() == player2_card.rank():
+    print(  player1_card, "and", player2_card, "of equal rank" )
+elif player1_card.rank() > player2_card.rank():
+    print( player1_card, "of higher rank than", player2_card )
+else:
+    print(  player2_card, "of higher rank than", player1_card )
+________________________________________________________________________________________________________________________
+'''
+lab 11
+'''
+
+################################################################################
+## Demonstration program for class Date
+################################################################################
+
+import date
+
+A = date.Date( 1, 1, 2014 )
+
+print( A )
+print( A.to_iso() )
+print( A.to_mdy() )
+print( A.is_valid() )
+print()
+
+B = date.Date( 12, 31, 2014 )
+
+print( B )
+print( B.to_iso() )
+print( B.to_mdy() )
+print( B.is_valid() )
+print()
+
+C = date.Date()
+
+C.from_iso( "2014-07-04" )
+
+print( C )
+print( C.to_iso() )
+print( C.to_mdy() )
+print( C.is_valid() )
+print()
+
+D = date.Date()
+
+D.from_mdy( "March 15, 2015" )
+
+print( D )
+print( D.to_iso() )
+print( D.to_mdy() )
+print( D.is_valid() )
+print()
+
+E = date.Date()
+
+print( E )
+print( E.to_iso() )
+print( E.to_mdy() )
+print( E.is_valid() )
+print()
+_______________________________________________________________________________________________________________
+
+#header files 
+import math
+#class created
+class Vector:
+    #functions created
+    def __init__(self, x=0, y=0):
+        self.x=x
+        self.y=y
+    def __str__(self):
+        return str(round(self.x, 2))+"i+ "+str(round(self.y))+"j"
+    def __repr__(self):
+        return str(self.x)+"i+ "+str(self.y)+"j"
+    def __add__(self, other):
+        return Vector(self.x+other.x, self.y+other.y)
+    def __sub__(self, other):
+        return self+(other*-1)
+    # called with float*vector
+    def __rmul__(self, other):
+        return Vector(self.x * other, self.y * other)
+    # called with vector * float
+    def __mul__(self, other):
+        if type(other)==Vector:
+            return (self.x * other.x) + (self.y * other.y)
+        return Vector(self.x*other, self.y*other)
+    def __eq__(self, other):
+        if self.x==other.x and self.y==other.y:
+            return True
+        return False
+    def magnitude(self):
+        return math.sqrt(self.x**2+self.y**2)
+    def unit(self):
+        try:#try and error for Zero Division Error
+            return 1/self.magnitude()
+        except ZeroDivisionError:
+            print("Cannot convert zero vector to a unit vector")
+            
+            
+#Calling functions
+v1=Vector(6.3333333, 4)
+v2=Vector(10, 4)
+v3=Vector(9, 2)
+v4=Vector(0,0)
+
+
+#displaying useful values
+print(v1+v2)
+print(4*v1)
+print(v1*4)
+print(v1*v2)
+print(v2==v3)
+print(v1.magnitude())
+print(v1.unit())
+print(v4.unit())
+print(v1.__repr__())
+_________________________________________________________________________________________________________
